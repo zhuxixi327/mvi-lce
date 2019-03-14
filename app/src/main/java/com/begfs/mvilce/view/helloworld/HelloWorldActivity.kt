@@ -20,7 +20,10 @@ class HelloWorldActivity : BaseActivity<HelloWorldExchange, HelloWorldPresenter,
     override fun initViewMode() = HelloViewModel("")
 
     override fun onReduce(vm: HelloViewModel, content: Any): HelloViewModel {
-        return (content as HelloDTO).toViewModel()
+        return when(content){
+            is HelloDTO -> content.toViewModel()
+            else -> vm
+        }
     }
 
     override fun layoutId() = R.layout.activity_helloworld
