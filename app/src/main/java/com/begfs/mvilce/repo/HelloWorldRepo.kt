@@ -1,6 +1,7 @@
 package com.begfs.mvilce.repo
 
 import com.begfs.mvilce.adt.ZResult
+import com.begfs.mvilce.view.helloworld.HelloDTO
 import com.begfs.mvilce.view.mvi.LCE
 import com.begfs.mvilce.view.mvi.LoadingStyle
 import io.reactivex.Observable
@@ -20,8 +21,9 @@ object HelloWorldRepo {
     }
 
 
-     fun getRandomMessage(): String {
+     fun getRandomMessage(): HelloDTO {
         val messages = listOf("Hello World", "Hola Mundo", "Hallo Welt", "Bonjour le monde")
+            .map { HelloDTO(it) }
         return messages[Random().nextInt(messages.size)]
     }
 }

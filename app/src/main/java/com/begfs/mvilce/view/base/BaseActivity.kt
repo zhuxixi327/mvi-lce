@@ -11,8 +11,12 @@ import com.hannesdorfmann.mosby3.mvi.MviPresenter
 import io.reactivex.functions.Consumer
 import com.begfs.mvilce.adt.ZResult
 
-abstract class BaseActivity<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>>>>
+abstract class BaseActivity<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>>>, S: Any>
     : MviActivity<V, P>(), VPExchange {
+
+    private lateinit var viewModel : S
+
+    abstract fun initViewMode() : S
 
     @LayoutRes
     abstract fun layoutId(): Int
@@ -24,6 +28,8 @@ abstract class BaseActivity<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewModel = initViewMode()
+
         beforeLayout(this)
         setContentView(layoutId())
         initView(savedInstanceState)
@@ -33,10 +39,15 @@ abstract class BaseActivity<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>
     override fun onLCE(lce: LCE<ZResult<Any>>) {
         lce.onLoadingOrResult(
             Consumer { var1 -> onLoading(var1) },
-            Consumer {
-                var1 -> var1.onFailureOrSuccess(
+            Consumer { //Result
+                result -> result.onFailureOrSuccess(
                     Consumer { failure -> onFailure(failure) },
-                    Consumer { success -> onSuccess(success.result()) }
+                    Consumer { //Success
+                            success -> run {
+                                viewModel = onReduce(viewModel, success.result())
+                                onRender(viewModel)
+                            }
+                    }
                 )
             }
         )
@@ -51,7 +62,11 @@ abstract class BaseActivity<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>
     open fun onFailure(e: Throwable) {
 
     }
+    /**
+     * onReduce: (s, t) -> new s
+     * */
+    abstract fun onReduce(vm: S, content: Any) : S
 
-    abstract fun onSuccess(content: Any)
+    abstract fun onRender(vm: S)
 
 }

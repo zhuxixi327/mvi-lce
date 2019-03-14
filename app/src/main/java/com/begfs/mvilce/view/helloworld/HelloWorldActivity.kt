@@ -7,7 +7,21 @@ import com.begfs.mvilce.view.mvi.Loading
 import com.jakewharton.rxbinding2.view.clicks
 import kotlinx.android.synthetic.main.activity_helloworld.*
 
-class HelloWorldActivity : BaseActivity<HelloWorldExchange, HelloWorldPresenter>(), HelloWorldExchange {
+class HelloWorldActivity : BaseActivity<HelloWorldExchange, HelloWorldPresenter, HelloViewModel>(), HelloWorldExchange {
+
+    override fun onRender(vm: HelloViewModel) {
+        loadingIndicator.visibility = View.INVISIBLE
+        with(helloWorldTextview) {
+            visibility = View.VISIBLE
+            text = vm.greeting
+        }
+    }
+
+    override fun initViewMode() = HelloViewModel("")
+
+    override fun onReduce(vm: HelloViewModel, content: Any): HelloViewModel {
+        return (content as HelloDTO).toViewModel()
+    }
 
     override fun layoutId() = R.layout.activity_helloworld
 
@@ -15,15 +29,6 @@ class HelloWorldActivity : BaseActivity<HelloWorldExchange, HelloWorldPresenter>
         super.onLoading(loading)
         helloWorldTextview.visibility = View.INVISIBLE
         loadingIndicator.visibility = View.VISIBLE
-    }
-
-    override fun onSuccess(content: Any) {
-        loadingIndicator.visibility = View.INVISIBLE
-
-        with(helloWorldTextview) {
-            visibility = View.VISIBLE
-            text = content as HelloContent
-        }
     }
 
     override fun createPresenter() = HelloWorldPresenter()
