@@ -2,7 +2,6 @@ package com.begfs.mvilce.view.helloworld
 
 import android.view.View
 import com.begfs.mvilce.R
-import com.begfs.mvilce.adt.ZResult
 import com.begfs.mvilce.view.base.BaseActivity
 import com.begfs.mvilce.view.mvi.Loading
 import com.jakewharton.rxbinding2.view.clicks
@@ -18,12 +17,12 @@ class HelloWorldActivity : BaseActivity<HelloWorldExchange, HelloWorldPresenter>
         loadingIndicator.visibility = View.VISIBLE
     }
 
-    override fun onSuccess(result: ZResult<Any>) {
+    override fun onSuccess(content: Any) {
         loadingIndicator.visibility = View.INVISIBLE
 
         with(helloWorldTextview) {
             visibility = View.VISIBLE
-            text = if(result.isSuccess()) (result.result() as HelloContent) else ""
+            text = content as HelloContent
         }
     }
 

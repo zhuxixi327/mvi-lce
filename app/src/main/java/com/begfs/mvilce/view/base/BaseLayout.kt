@@ -43,7 +43,7 @@ abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResult<
             Consumer {
                 var1 -> var1.onFailureOrSuccess(
                     Consumer { failure -> onFailure(failure) },
-                    Consumer { result -> onSuccess(result) }
+                    Consumer { success -> onSuccess(success.result()) }
                 )
             }
         )
@@ -58,7 +58,7 @@ abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResult<
 
     }
 
-    abstract fun onSuccess(result: ZResult<Any>)
+    abstract fun onSuccess(content: Any)
 }
 
 abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>>>> : MviFrameLayout<V, P>,
@@ -91,9 +91,9 @@ abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResult<A
             Consumer { var1 -> onLoading(var1) },
             Consumer {
                     var1 -> var1.onFailureOrSuccess(
-                Consumer { failure -> onFailure(failure) },
-                Consumer { result -> onSuccess(result) }
-            )
+                        Consumer { failure -> onFailure(failure) },
+                        Consumer { success -> onSuccess(success.result()) }
+                    )
             }
         )
     }
@@ -107,7 +107,7 @@ abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResult<A
 
     }
 
-    abstract fun onSuccess(result: ZResult<Any>)
+    abstract fun onSuccess(content: Any)
 }
 
 abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>>>> : MviRelativeLayout<V, P>,
@@ -140,9 +140,9 @@ abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResul
             Consumer { var1 -> onLoading(var1) },
             Consumer {
                     var1 -> var1.onFailureOrSuccess(
-                Consumer { failure -> onFailure(failure) },
-                Consumer { result -> onSuccess(result) }
-            )
+                        Consumer { failure -> onFailure(failure) },
+                        Consumer { success -> onSuccess(success.result()) }
+                    )
             }
         )
     }
@@ -156,5 +156,5 @@ abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResul
 
     }
 
-    abstract fun onSuccess(result: ZResult<Any>)
+    abstract fun onSuccess(content: Any)
 }

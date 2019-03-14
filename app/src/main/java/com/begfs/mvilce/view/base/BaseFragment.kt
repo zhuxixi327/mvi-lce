@@ -17,7 +17,7 @@ abstract class BaseFragment<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>
             Consumer {
                 var1 -> var1.onFailureOrSuccess(
                     Consumer { failure -> onFailure(failure) },
-                    Consumer { result -> onSuccess(result) }
+                    Consumer { success -> onSuccess(success.result()) }
                 )
             }
         )
@@ -32,6 +32,6 @@ abstract class BaseFragment<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>
 
     }
 
-    abstract fun onSuccess(result: ZResult<Any>)
+    abstract fun onSuccess(content: Any)
 
 }
