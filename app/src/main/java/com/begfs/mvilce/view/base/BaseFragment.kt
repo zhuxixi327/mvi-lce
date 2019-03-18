@@ -3,13 +3,14 @@ package com.begfs.mvilce.view.base
 import android.os.Bundle
 import com.begfs.mvilce.adt.ZResult
 import com.begfs.mvilce.view.mvi.LCE
+import com.begfs.mvilce.view.mvi.LabeledLCE
 import com.begfs.mvilce.view.mvi.Loading
 import com.begfs.mvilce.view.mvi.VPExchange
 import com.hannesdorfmann.mosby3.mvi.MviFragment
 import com.hannesdorfmann.mosby3.mvi.MviPresenter
 import io.reactivex.functions.Consumer
 
-abstract class BaseFragment<V : VPExchange, P : MviPresenter<V, Pair<Any, LCE<ZResult<Any>>>>, S: Any>
+abstract class BaseFragment<V : VPExchange, P : MviPresenter<V, LabeledLCE>, S: Any>
     : MviFragment<V, P>(), VPExchange {
 
     private lateinit var viewModel : S
@@ -23,9 +24,9 @@ abstract class BaseFragment<V : VPExchange, P : MviPresenter<V, Pair<Any, LCE<ZR
 
 
 
-    override fun onLCE(pair: Pair<Any, LCE<ZResult<Any>>>) {
-        val type = pair.first
-        val lce = pair.second
+    override fun onLCE(pair: LabeledLCE) {
+        val type = pair.label
+        val lce = pair.data
 
         lce.onLoadingOrResult(
             Consumer { var1 -> onLoading(type to var1) },

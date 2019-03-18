@@ -1,5 +1,5 @@
 package com.begfs.mvilce.adt
 
-//Algebraic data type
+//Algebraic data label
 // ZResult
 // Either

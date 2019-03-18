@@ -9,9 +9,9 @@ import com.begfs.mvilce.view.mvi.VPExchange
 import com.hannesdorfmann.mosby3.mvi.MviActivity
 import com.hannesdorfmann.mosby3.mvi.MviPresenter
 import io.reactivex.functions.Consumer
-import com.begfs.mvilce.adt.ZResult
+import com.begfs.mvilce.view.mvi.LabeledLCE
 
-abstract class BaseActivity<V : VPExchange, P : MviPresenter<V, Pair<Any, LCE<ZResult<Any>>>>, S: Any>
+abstract class BaseActivity<V : VPExchange, P : MviPresenter<V, LabeledLCE>, S: Any>
     : MviActivity<V, P>(), VPExchange {
 
     private lateinit var viewModel : S
@@ -36,10 +36,10 @@ abstract class BaseActivity<V : VPExchange, P : MviPresenter<V, Pair<Any, LCE<ZR
         initData(savedInstanceState)
     }
 
-    override fun onLCE(pair: Pair<Any, LCE<ZResult<Any>>>) {
+    override fun onLCE(pair: LabeledLCE) {
 
-        val type = pair.first
-        val lce = pair.second
+        val type = pair.label
+        val lce = pair.data
 
         lce.onLoadingOrResult(
             Consumer { var1 -> onLoading(type to var1) },

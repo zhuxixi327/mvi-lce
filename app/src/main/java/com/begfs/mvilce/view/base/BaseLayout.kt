@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import com.begfs.mvilce.adt.ZResult
 import com.begfs.mvilce.view.mvi.LCE
+import com.begfs.mvilce.view.mvi.LabeledLCE
 import com.begfs.mvilce.view.mvi.Loading
 import com.begfs.mvilce.view.mvi.VPExchange
 import com.hannesdorfmann.mosby3.mvi.MviPresenter
@@ -12,7 +13,7 @@ import com.hannesdorfmann.mosby3.mvi.layout.MviLinearLayout
 import com.hannesdorfmann.mosby3.mvi.layout.MviRelativeLayout
 import io.reactivex.functions.Consumer
 
-abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, Pair<Any, LCE<ZResult<Any>>>>, S: Any>
+abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, LabeledLCE>, S: Any>
     : MviLinearLayout<V, P>, VPExchange {
 
     constructor(context: Context) : super(context) {
@@ -47,9 +48,9 @@ abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, Pair<Any, LC
 
     abstract fun initViewMode() : S
 
-    override fun onLCE(pair: Pair<Any, LCE<ZResult<Any>>>) {
-        val type = pair.first
-        val lce = pair.second
+    override fun onLCE(pair: LabeledLCE) {
+        val type = pair.label
+        val lce = pair.data
 
         lce.onLoadingOrResult(
             Consumer { var1 -> onLoading(type to var1) },
@@ -84,7 +85,7 @@ abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, Pair<Any, LC
     abstract fun onRender(vm: S)
 }
 
-abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, Pair<Any, LCE<ZResult<Any>>>>, S: Any>
+abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, LabeledLCE>, S: Any>
     : MviFrameLayout<V, P>, VPExchange {
 
     constructor(context: Context) : super(context) {
@@ -119,9 +120,9 @@ abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, Pair<Any, LCE
 
     abstract fun initViewMode() : S
 
-    override fun onLCE(pair: Pair<Any, LCE<ZResult<Any>>>) {
-        val type = pair.first
-        val lce = pair.second
+    override fun onLCE(pair: LabeledLCE) {
+        val type = pair.label
+        val lce = pair.data
 
         lce.onLoadingOrResult(
             Consumer { var1 -> onLoading(type to var1) },
@@ -156,7 +157,7 @@ abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, Pair<Any, LCE
     abstract fun onRender(vm: S)
 }
 
-abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, Pair<Any, LCE<ZResult<Any>>>>, S: Any>
+abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, LabeledLCE>, S: Any>
     : MviRelativeLayout<V, P>, VPExchange {
 
     constructor(context: Context) : super(context) {
@@ -191,9 +192,9 @@ abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, Pair<Any, 
 
     abstract fun initViewMode() : S
 
-    override fun onLCE(pair: Pair<Any, LCE<ZResult<Any>>>) {
-        val type = pair.first
-        val lce = pair.second
+    override fun onLCE(pair: LabeledLCE) {
+        val type = pair.label
+        val lce = pair.data
 
         lce.onLoadingOrResult(
             Consumer { var1 -> onLoading(type to var1) },

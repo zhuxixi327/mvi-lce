@@ -3,6 +3,7 @@ package com.begfs.mvilce.view.helloworld
 import android.view.View
 import com.begfs.mvilce.R
 import com.begfs.mvilce.view.base.BaseActivity
+import com.begfs.mvilce.view.mvi.Labeled
 import com.begfs.mvilce.view.mvi.Loading
 import com.begfs.mvilce.view.mvi.MVIHelper
 
@@ -41,5 +42,5 @@ class HelloWorldActivity : BaseActivity<HelloWorldExchange, HelloWorldPresenter,
 
     override fun requestSayHelloWorld() = helloWorldButton
         .clicks()
-        .flatMap {  MVIHelper.mapIntent(HelloIntentType.SAY_HELLO, it) }!!
+        .map { Labeled(HelloIntentType.SAY_HELLO, it) }!!
 }
