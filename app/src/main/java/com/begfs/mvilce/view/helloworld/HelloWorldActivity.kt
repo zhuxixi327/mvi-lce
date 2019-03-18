@@ -4,6 +4,8 @@ import android.view.View
 import com.begfs.mvilce.R
 import com.begfs.mvilce.view.base.BaseActivity
 import com.begfs.mvilce.view.mvi.Loading
+import com.begfs.mvilce.view.mvi.MVIHelper
+
 import com.jakewharton.rxbinding2.view.clicks
 import kotlinx.android.synthetic.main.activity_helloworld.*
 
@@ -19,7 +21,8 @@ class HelloWorldActivity : BaseActivity<HelloWorldExchange, HelloWorldPresenter,
 
     override fun initViewMode() = HelloViewModel("")
 
-    override fun onReduce(vm: HelloViewModel, content: Any): HelloViewModel {
+    override fun onReduce(vm: HelloViewModel, contentPair: Pair<Any, Any>): HelloViewModel {
+        val content = contentPair.second
         return when(content){
             is HelloDTO -> content.toViewModel()
             else -> vm
@@ -28,14 +31,15 @@ class HelloWorldActivity : BaseActivity<HelloWorldExchange, HelloWorldPresenter,
 
     override fun layoutId() = R.layout.activity_helloworld
 
-    override fun onLoading(loading: Loading) {
-        super.onLoading(loading)
+    override fun onLoading(loadingPair: Pair<Any, Loading>) {
+        super.onLoading(loadingPair)
         helloWorldTextview.visibility = View.INVISIBLE
         loadingIndicator.visibility = View.VISIBLE
     }
 
     override fun createPresenter() = HelloWorldPresenter()
 
-    override fun requestSayHelloWorld() = helloWorldButton.clicks()
-
+    override fun requestSayHelloWorld() = helloWorldButton
+        .clicks()
+        .flatMap {  MVIHelper.mapIntent(HelloIntentType.SAY_HELLO, it) }!!
 }

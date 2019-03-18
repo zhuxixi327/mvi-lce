@@ -9,18 +9,23 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import com.begfs.mvilce.adt.ZResult
+import com.begfs.mvilce.view.mvi.MVIHelper
+
+enum class HelloIntentType{
+    SAY_HELLO, SAY_WORLD
+}
 
 interface HelloWorldExchange : VPExchange {
-    fun requestSayHelloWorld(): Observable<Unit>
+    fun requestSayHelloWorld(): Observable<Pair<Any, Unit>>
 }
 
 //绑定HelloWorldExchange，说明Presenter绑定了view和presenter
-class HelloWorldPresenter : MviBasePresenter<HelloWorldExchange, LCE<ZResult<Any>>>() {
+class HelloWorldPresenter : MviBasePresenter<HelloWorldExchange, Pair<Any, LCE<ZResult<Any>>> >() {
     override fun bindIntents() {
-        val helloWorldReact: Observable<LCE<ZResult<Any>>> = intent(HelloWorldExchange::requestSayHelloWorld)
+        val helloWorldReact: Observable<Pair<Any, LCE<ZResult<Any>>>> = intent(HelloWorldExchange::requestSayHelloWorld)
             .subscribeOn(Schedulers.io())
             .debounce(400, TimeUnit.MILLISECONDS)
-            .switchMap { HelloWorldRepo.getHelloWorldText() }
+            .flatMap { MVIHelper.mapResult(it.first, HelloWorldRepo.getHelloWorldText()) }
             .observeOn(AndroidSchedulers.mainThread())
 
         subscribeViewState(helloWorldReact, HelloWorldExchange::onLCE)

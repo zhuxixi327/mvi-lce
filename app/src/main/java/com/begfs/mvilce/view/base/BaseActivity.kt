@@ -11,7 +11,7 @@ import com.hannesdorfmann.mosby3.mvi.MviPresenter
 import io.reactivex.functions.Consumer
 import com.begfs.mvilce.adt.ZResult
 
-abstract class BaseActivity<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>>>, S: Any>
+abstract class BaseActivity<V : VPExchange, P : MviPresenter<V, Pair<Any, LCE<ZResult<Any>>>>, S: Any>
     : MviActivity<V, P>(), VPExchange {
 
     private lateinit var viewModel : S
@@ -36,15 +36,19 @@ abstract class BaseActivity<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>
         initData(savedInstanceState)
     }
 
-    override fun onLCE(lce: LCE<ZResult<Any>>) {
+    override fun onLCE(pair: Pair<Any, LCE<ZResult<Any>>>) {
+
+        val type = pair.first
+        val lce = pair.second
+
         lce.onLoadingOrResult(
-            Consumer { var1 -> onLoading(var1) },
+            Consumer { var1 -> onLoading(type to var1) },
             Consumer { //Result
                 result -> result.onFailureOrSuccess(
-                    Consumer { failure -> onFailure(failure) },
+                    Consumer { failure -> onFailure(type to failure) },
                     Consumer { //Success
                             success -> run {
-                                viewModel = onReduce(viewModel, success.result())
+                                viewModel = onReduce(viewModel, type to success.result())
                                 onRender(viewModel)
                             }
                     }
@@ -54,18 +58,18 @@ abstract class BaseActivity<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>
     }
 
     // loading handle template
-    open fun onLoading(loading: Loading) {
+    open fun onLoading(loadingPair: Pair<Any, Loading>) {
 
     }
 
     // error handle template
-    open fun onFailure(e: Throwable) {
+    open fun onFailure(ePair:  Pair<Any, Throwable>) {
 
     }
     /**
      * onReduce: (s, t) -> new s
      * */
-    abstract fun onReduce(vm: S, content: Any) : S
+    abstract fun onReduce(vm: S, contentPair: Pair<Any, Any>) : S
 
     abstract fun onRender(vm: S)
 

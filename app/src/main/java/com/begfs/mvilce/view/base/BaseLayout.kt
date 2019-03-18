@@ -12,7 +12,7 @@ import com.hannesdorfmann.mosby3.mvi.layout.MviLinearLayout
 import com.hannesdorfmann.mosby3.mvi.layout.MviRelativeLayout
 import io.reactivex.functions.Consumer
 
-abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>>>, S: Any>
+abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, Pair<Any, LCE<ZResult<Any>>>>, S: Any>
     : MviLinearLayout<V, P>, VPExchange {
 
     constructor(context: Context) : super(context) {
@@ -47,22 +47,18 @@ abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResult<
 
     abstract fun initViewMode() : S
 
-    /**
-     * onReduce: (s, t) -> new s
-     * */
-    abstract fun onReduce(vm: S, content: Any) : S
+    override fun onLCE(pair: Pair<Any, LCE<ZResult<Any>>>) {
+        val type = pair.first
+        val lce = pair.second
 
-    abstract fun onRender(vm: S)
-
-    override fun onLCE(lce: LCE<ZResult<Any>>) {
         lce.onLoadingOrResult(
-            Consumer { var1 -> onLoading(var1) },
+            Consumer { var1 -> onLoading(type to var1) },
             Consumer { //Result
                     result -> result.onFailureOrSuccess(
-                Consumer { failure -> onFailure(failure) },
+                Consumer { failure -> onFailure(type to failure) },
                 Consumer { //Success
                         success -> run {
-                    viewModel = onReduce(viewModel, success.result())
+                    viewModel = onReduce(viewModel, type to success.result())
                     onRender(viewModel)
                 }
                 }
@@ -71,17 +67,24 @@ abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResult<
         )
     }
 
-    open fun onLoading(loading: Loading) {
-
-    }
-
     // loading handle template
-    open fun onFailure(e: Throwable) {
+    open fun onLoading(loadingPair: Pair<Any, Loading>) {
 
     }
+
+    // error handle template
+    open fun onFailure(ePair:  Pair<Any, Throwable>) {
+
+    }
+    /**
+     * onReduce: (s, t) -> new s
+     * */
+    abstract fun onReduce(vm: S, contentPair: Pair<Any, Any>) : S
+
+    abstract fun onRender(vm: S)
 }
 
-abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>>>, S: Any>
+abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, Pair<Any, LCE<ZResult<Any>>>>, S: Any>
     : MviFrameLayout<V, P>, VPExchange {
 
     constructor(context: Context) : super(context) {
@@ -116,22 +119,18 @@ abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResult<A
 
     abstract fun initViewMode() : S
 
-    /**
-     * onReduce: (s, t) -> new s
-     * */
-    abstract fun onReduce(vm: S, content: Any) : S
+    override fun onLCE(pair: Pair<Any, LCE<ZResult<Any>>>) {
+        val type = pair.first
+        val lce = pair.second
 
-    abstract fun onRender(vm: S)
-
-    override fun onLCE(lce: LCE<ZResult<Any>>) {
         lce.onLoadingOrResult(
-            Consumer { var1 -> onLoading(var1) },
+            Consumer { var1 -> onLoading(type to var1) },
             Consumer { //Result
                     result -> result.onFailureOrSuccess(
-                Consumer { failure -> onFailure(failure) },
+                Consumer { failure -> onFailure(type to failure) },
                 Consumer { //Success
                         success -> run {
-                    viewModel = onReduce(viewModel, success.result())
+                    viewModel = onReduce(viewModel, type to success.result())
                     onRender(viewModel)
                 }
                 }
@@ -140,17 +139,24 @@ abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResult<A
         )
     }
 
-    open fun onLoading(loading: Loading) {
-
-    }
-
     // loading handle template
-    open fun onFailure(e: Throwable) {
+    open fun onLoading(loadingPair: Pair<Any, Loading>) {
 
     }
+
+    // error handle template
+    open fun onFailure(ePair:  Pair<Any, Throwable>) {
+
+    }
+    /**
+     * onReduce: (s, t) -> new s
+     * */
+    abstract fun onReduce(vm: S, contentPair: Pair<Any, Any>) : S
+
+    abstract fun onRender(vm: S)
 }
 
-abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResult<Any>>>, S: Any>
+abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, Pair<Any, LCE<ZResult<Any>>>>, S: Any>
     : MviRelativeLayout<V, P>, VPExchange {
 
     constructor(context: Context) : super(context) {
@@ -185,22 +191,18 @@ abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResul
 
     abstract fun initViewMode() : S
 
-    /**
-     * onReduce: (s, t) -> new s
-     * */
-    abstract fun onReduce(vm: S, content: Any) : S
+    override fun onLCE(pair: Pair<Any, LCE<ZResult<Any>>>) {
+        val type = pair.first
+        val lce = pair.second
 
-    abstract fun onRender(vm: S)
-
-    override fun onLCE(lce: LCE<ZResult<Any>>) {
         lce.onLoadingOrResult(
-            Consumer { var1 -> onLoading(var1) },
+            Consumer { var1 -> onLoading(type to var1) },
             Consumer { //Result
                     result -> result.onFailureOrSuccess(
-                Consumer { failure -> onFailure(failure) },
+                Consumer { failure -> onFailure(type to failure) },
                 Consumer { //Success
                         success -> run {
-                    viewModel = onReduce(viewModel, success.result())
+                    viewModel = onReduce(viewModel, type to success.result())
                     onRender(viewModel)
                 }
                 }
@@ -209,12 +211,19 @@ abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, LCE<ZResul
         )
     }
 
-    open fun onLoading(loading: Loading) {
-
-    }
-
     // loading handle template
-    open fun onFailure(e: Throwable) {
+    open fun onLoading(loadingPair: Pair<Any, Loading>) {
 
     }
+
+    // error handle template
+    open fun onFailure(ePair:  Pair<Any, Throwable>) {
+
+    }
+    /**
+     * onReduce: (s, t) -> new s
+     * */
+    abstract fun onReduce(vm: S, contentPair: Pair<Any, Any>) : S
+
+    abstract fun onRender(vm: S)
 }
