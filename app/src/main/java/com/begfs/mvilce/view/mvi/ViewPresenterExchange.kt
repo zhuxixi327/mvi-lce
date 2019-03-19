@@ -8,9 +8,12 @@ import io.reactivex.functions.BiFunction
 /**
  * 带label的数据
  * */
-data class
-Labeled<T>(val label: Any, val data: T)
+data class Labeled<T>(val label: Any, val data: T)
 typealias LabeledLCE = Labeled<LCE<ZResult<Any>>>
+
+data class Req<T>(val id: Any, val data: T)
+
+data class ReqRes<ReqT, ResT>(val req: Req<ReqT>, val data: ResT)
 
 //view层用户的意图
 interface IntentTo
