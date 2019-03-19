@@ -3,17 +3,14 @@ package com.begfs.mvilce.view.base
 import android.content.Context
 import android.util.AttributeSet
 import com.begfs.mvilce.adt.ZResult
-import com.begfs.mvilce.view.mvi.LCE
-import com.begfs.mvilce.view.mvi.LabeledLCE
-import com.begfs.mvilce.view.mvi.Loading
-import com.begfs.mvilce.view.mvi.VPExchange
+import com.begfs.mvilce.view.mvi.*
 import com.hannesdorfmann.mosby3.mvi.MviPresenter
 import com.hannesdorfmann.mosby3.mvi.layout.MviFrameLayout
 import com.hannesdorfmann.mosby3.mvi.layout.MviLinearLayout
 import com.hannesdorfmann.mosby3.mvi.layout.MviRelativeLayout
 import io.reactivex.functions.Consumer
 
-abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, LabeledLCE>, S: Any>
+abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, ReqRes>, S: Any>
     : MviLinearLayout<V, P>, VPExchange {
 
     constructor(context: Context) : super(context) {
@@ -48,18 +45,17 @@ abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, LabeledLCE>,
 
     abstract fun initViewMode() : S
 
-    override fun onLCE(pair: LabeledLCE) {
-        val type = pair.label
-        val lce = pair.data
+    override fun onLCE(rr: ReqRes) {
+        val lce = rr.data
 
         lce.onLoadingOrResult(
-            Consumer { var1 -> onLoading(type to var1) },
+            Consumer { var1 -> onLoading(rr.req to var1) },
             Consumer { //Result
                     result -> result.onFailureOrSuccess(
-                Consumer { failure -> onFailure(type to failure) },
+                Consumer { failure -> onFailure(rr.req to failure) },
                 Consumer { //Success
                         success -> run {
-                    viewModel = onReduce(viewModel, type to success.result())
+                    viewModel = onReduce(viewModel, rr.req to success.result())
                     onRender(viewModel)
                 }
                 }
@@ -69,23 +65,23 @@ abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, LabeledLCE>,
     }
 
     // loading handle template
-    open fun onLoading(loadingPair: Pair<Any, Loading>) {
+    open fun onLoading(pair: Pair<Req, Loading>) {
 
     }
 
     // error handle template
-    open fun onFailure(ePair:  Pair<Any, Throwable>) {
+    open fun onFailure(pair:  Pair<Req, Throwable>) {
 
     }
     /**
      * onReduce: (s, t) -> new s
      * */
-    abstract fun onReduce(vm: S, contentPair: Pair<Any, Any>) : S
+    abstract fun onReduce(vm: S, pair: Pair<Req, Any>) : S
 
     abstract fun onRender(vm: S)
 }
 
-abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, LabeledLCE>, S: Any>
+abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, ReqRes>, S: Any>
     : MviFrameLayout<V, P>, VPExchange {
 
     constructor(context: Context) : super(context) {
@@ -120,18 +116,17 @@ abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, LabeledLCE>, 
 
     abstract fun initViewMode() : S
 
-    override fun onLCE(pair: LabeledLCE) {
-        val type = pair.label
-        val lce = pair.data
+    override fun onLCE(rr: ReqRes) {
+        val lce = rr.data
 
         lce.onLoadingOrResult(
-            Consumer { var1 -> onLoading(type to var1) },
+            Consumer { var1 -> onLoading(rr.req to var1) },
             Consumer { //Result
                     result -> result.onFailureOrSuccess(
-                Consumer { failure -> onFailure(type to failure) },
+                Consumer { failure -> onFailure(rr.req to failure) },
                 Consumer { //Success
                         success -> run {
-                    viewModel = onReduce(viewModel, type to success.result())
+                    viewModel = onReduce(viewModel, rr.req to success.result())
                     onRender(viewModel)
                 }
                 }
@@ -141,23 +136,23 @@ abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, LabeledLCE>, 
     }
 
     // loading handle template
-    open fun onLoading(loadingPair: Pair<Any, Loading>) {
+    open fun onLoading(pair: Pair<Req, Loading>) {
 
     }
 
     // error handle template
-    open fun onFailure(ePair:  Pair<Any, Throwable>) {
+    open fun onFailure(pair:  Pair<Req, Throwable>) {
 
     }
     /**
      * onReduce: (s, t) -> new s
      * */
-    abstract fun onReduce(vm: S, contentPair: Pair<Any, Any>) : S
+    abstract fun onReduce(vm: S, pair: Pair<Req, Any>) : S
 
     abstract fun onRender(vm: S)
 }
 
-abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, LabeledLCE>, S: Any>
+abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, ReqRes>, S: Any>
     : MviRelativeLayout<V, P>, VPExchange {
 
     constructor(context: Context) : super(context) {
@@ -192,18 +187,17 @@ abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, LabeledLCE
 
     abstract fun initViewMode() : S
 
-    override fun onLCE(pair: LabeledLCE) {
-        val type = pair.label
-        val lce = pair.data
+    override fun onLCE(rr: ReqRes) {
+        val lce = rr.data
 
         lce.onLoadingOrResult(
-            Consumer { var1 -> onLoading(type to var1) },
+            Consumer { var1 -> onLoading(rr.req to var1) },
             Consumer { //Result
                     result -> result.onFailureOrSuccess(
-                Consumer { failure -> onFailure(type to failure) },
+                Consumer { failure -> onFailure(rr.req to failure) },
                 Consumer { //Success
                         success -> run {
-                    viewModel = onReduce(viewModel, type to success.result())
+                    viewModel = onReduce(viewModel, rr.req to success.result())
                     onRender(viewModel)
                 }
                 }
@@ -213,18 +207,18 @@ abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, LabeledLCE
     }
 
     // loading handle template
-    open fun onLoading(loadingPair: Pair<Any, Loading>) {
+    open fun onLoading(pair: Pair<Req, Loading>) {
 
     }
 
     // error handle template
-    open fun onFailure(ePair:  Pair<Any, Throwable>) {
+    open fun onFailure(pair:  Pair<Req, Throwable>) {
 
     }
     /**
      * onReduce: (s, t) -> new s
      * */
-    abstract fun onReduce(vm: S, contentPair: Pair<Any, Any>) : S
+    abstract fun onReduce(vm: S, pair: Pair<Req, Any>) : S
 
     abstract fun onRender(vm: S)
 }

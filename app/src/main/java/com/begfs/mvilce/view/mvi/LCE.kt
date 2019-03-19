@@ -11,7 +11,7 @@ enum class LoadingStyle { PROGRESS_DIALOG, PROGRESS_BAR }
 data class Loading(val style: LoadingStyle, val message: String)
 
 /***
- * LCE<C>: Loading Content Error模式, C是正确返回的数据的类型
+ * LCE<C>: Loading Content Error模式, C是正确时返回数据的类型
  * 实质是Either<Loading, ZResult<C>>，其性质：
  * 1 Loading和Result<C>互斥
  * 2 ZResult<C>可包含正确和错误两种情况，正确内容C和错误的Throwable互斥
@@ -25,6 +25,7 @@ sealed class LCE<C> {
 
         fun <C> failure(e: Throwable): LCE<ZResult<C>> = LCEResult(ZResult.failure(e))
     }
+
 
     abstract fun getLoading(): Loading
     abstract fun getResult(): ZResult<C>
