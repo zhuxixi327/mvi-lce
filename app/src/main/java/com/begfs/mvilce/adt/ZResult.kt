@@ -107,7 +107,7 @@ class Success<R> constructor(private val content: R) : ZResult<R>() {
     }
 
     override fun <T> map(transformValue: ExceptionThrowingFunction<R, T>): ZResult<T> {
-        return attempt( object : ExceptionThrowingSupplier<T>{
+        return attempt( object : ExceptionThrowingSupplier<T> {
             override fun get(): T {
                 return transformValue.apply(content)
             }

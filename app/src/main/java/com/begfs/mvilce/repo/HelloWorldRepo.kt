@@ -4,11 +4,14 @@ import com.begfs.mvilce.adt.ZResult
 import com.begfs.mvilce.view.helloworld.HelloDTO
 import com.begfs.mvilce.view.mvi.LCE
 import com.begfs.mvilce.view.mvi.LoadingStyle
+import com.begfs.mvilce.view.mvi.RxHelper
 import io.reactivex.Observable
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 object HelloWorldRepo {
+
+
 
     fun getHelloWorldText(): Observable<LCE<ZResult<Any>>> {
 
@@ -16,8 +19,7 @@ object HelloWorldRepo {
                 .just(getRandomMessage())
                 .delay(1, TimeUnit.SECONDS)
                 .map { LCE.success<Any>(it) }
-                .startWith ( LCE.loading(LoadingStyle.PROGRESS_BAR, "") )
-                .onErrorReturn { LCE.failure(it) }
+                .compose(RxHelper.loadingErrorTransformer(LoadingStyle.PROGRESS_BAR, ""))
     }
 
 
