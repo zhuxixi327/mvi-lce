@@ -22,7 +22,7 @@ class HelloWorldPresenter : MviBasePresenter<HelloWorldExchange, ReqRes >() {
         val helloWorldReact: Observable<ReqRes> = intent(HelloWorldExchange::requestSayHelloWorld)
             .subscribeOn(Schedulers.io())
             .debounce(400, TimeUnit.MILLISECONDS)
-            .switchMap { MVIHelper.mapResult(it, HelloWorldRepo.getHelloWorldText()) }
+            .switchMap { VPHelper.combineLatest(it, HelloWorldRepo.getHelloWorldText()) }
             .observeOn(AndroidSchedulers.mainThread())
 
         subscribeViewState(helloWorldReact, HelloWorldExchange::onLCE)
