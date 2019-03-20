@@ -1,13 +1,16 @@
 package com.begfs.mvilce.view.base
 
 import android.os.Bundle
+import com.begfs.mvilce.error.ErrorView
+import com.begfs.mvilce.error.ErrorViewType
+import com.begfs.mvilce.error.Errored
 import com.begfs.mvilce.view.mvi.*
 import com.hannesdorfmann.mosby3.mvi.MviFragment
 import com.hannesdorfmann.mosby3.mvi.MviPresenter
 import io.reactivex.functions.Consumer
 
 abstract class BaseFragment<V : VPExchange, P : MviPresenter<V, ReqRes>, S: Any>
-    : MviFragment<V, P>(), VPExchange {
+    : MviFragment<V, P>(), VPExchange, ErrorView {
 
     private lateinit var viewModel : S
 
@@ -44,6 +47,11 @@ abstract class BaseFragment<V : VPExchange, P : MviPresenter<V, ReqRes>, S: Any>
 
     // error handle template
     open fun onFailure(pair:  Pair<Req, Throwable>) {
+        Errored.handleError(this, pair.second)
+    }
+
+    /**child should call super.showError*/
+    override fun showError(type : ErrorViewType, message : String, throwable: Throwable){
 
     }
     /**

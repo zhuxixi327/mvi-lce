@@ -3,6 +3,9 @@ package com.begfs.mvilce.view.base
 import android.content.Context
 import android.util.AttributeSet
 import com.begfs.mvilce.adt.ZResult
+import com.begfs.mvilce.error.ErrorView
+import com.begfs.mvilce.error.ErrorViewType
+import com.begfs.mvilce.error.Errored
 import com.begfs.mvilce.view.mvi.*
 import com.hannesdorfmann.mosby3.mvi.MviPresenter
 import com.hannesdorfmann.mosby3.mvi.layout.MviFrameLayout
@@ -11,7 +14,7 @@ import com.hannesdorfmann.mosby3.mvi.layout.MviRelativeLayout
 import io.reactivex.functions.Consumer
 
 abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, ReqRes>, S: Any>
-    : MviLinearLayout<V, P>, VPExchange {
+    : MviLinearLayout<V, P>, VPExchange, ErrorView {
 
     constructor(context: Context) : super(context) {
         initViewLocal(context)
@@ -71,6 +74,11 @@ abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, ReqRes>, S: 
 
     // error handle template
     open fun onFailure(pair:  Pair<Req, Throwable>) {
+        Errored.handleError(this, pair.second)
+    }
+
+    /**child should call super.showError*/
+    override fun showError(type : ErrorViewType, message : String, throwable: Throwable){
 
     }
     /**
@@ -82,7 +90,7 @@ abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, ReqRes>, S: 
 }
 
 abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, ReqRes>, S: Any>
-    : MviFrameLayout<V, P>, VPExchange {
+    : MviFrameLayout<V, P>, VPExchange, ErrorView {
 
     constructor(context: Context) : super(context) {
         initViewLocal(context)
@@ -142,6 +150,11 @@ abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, ReqRes>, S: A
 
     // error handle template
     open fun onFailure(pair:  Pair<Req, Throwable>) {
+        Errored.handleError(this, pair.second)
+    }
+
+    /**child should call super.showError*/
+    override fun showError(type : ErrorViewType, message : String, throwable: Throwable){
 
     }
     /**
@@ -153,7 +166,7 @@ abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, ReqRes>, S: A
 }
 
 abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, ReqRes>, S: Any>
-    : MviRelativeLayout<V, P>, VPExchange {
+    : MviRelativeLayout<V, P>, VPExchange, ErrorView {
 
     constructor(context: Context) : super(context) {
         initViewLocal(context)
@@ -213,6 +226,11 @@ abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, ReqRes>, S
 
     // error handle template
     open fun onFailure(pair:  Pair<Req, Throwable>) {
+        Errored.handleError(this, pair.second)
+    }
+
+    /**child should call super.showError*/
+    override fun showError(type : ErrorViewType, message : String, throwable: Throwable){
 
     }
     /**
