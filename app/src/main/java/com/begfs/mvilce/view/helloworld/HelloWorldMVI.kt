@@ -1,6 +1,5 @@
 package com.begfs.mvilce.view.helloworld
 
-import com.begfs.mvilce.repo.HelloWorldRepo
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

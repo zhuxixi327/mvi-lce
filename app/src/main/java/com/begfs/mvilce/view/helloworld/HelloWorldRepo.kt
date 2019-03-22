@@ -1,7 +1,6 @@
-package com.begfs.mvilce.repo
+package com.begfs.mvilce.view.helloworld
 
 import com.begfs.mvilce.adt.ZResult
-import com.begfs.mvilce.view.helloworld.HelloDTO
 import com.begfs.mvilce.view.mvi.LCE
 import com.begfs.mvilce.view.mvi.LoadingStyle
 import com.begfs.mvilce.view.mvi.RxHelper
