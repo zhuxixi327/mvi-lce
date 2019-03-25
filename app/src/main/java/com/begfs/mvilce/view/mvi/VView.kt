@@ -2,14 +2,14 @@ package com.begfs.mvilce.view.mvi
 
 import io.reactivex.functions.Consumer
 
-enum class ErrorViewType{
+enum class ErrorStyle{
     DIALOG, TOAST
 }
 
 interface VView<S> {
     var viewModel : S
 
-    fun showError(req: Req, type : ErrorViewType, message : String, throwable: Throwable)
+    fun showError(req: Req, style : ErrorStyle, message : String, throwable: Throwable)
 
     fun onLoading(pair: Pair<Req, Loading>)
 

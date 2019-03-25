@@ -25,7 +25,7 @@ abstract class BaseFragment<V : VPExchange, P : MviPresenter<V, ReqRes>, S: Any>
     }
 
     /**child should call super.showError*/
-    override fun showError(req : Req, type : ErrorViewType, message : String, throwable: Throwable){
+    override fun showError(req : Req, style : ErrorStyle, message : String, throwable: Throwable){
 
     }
 

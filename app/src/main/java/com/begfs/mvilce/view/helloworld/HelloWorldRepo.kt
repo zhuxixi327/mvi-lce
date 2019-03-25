@@ -10,17 +10,13 @@ import java.util.concurrent.TimeUnit
 
 object HelloWorldRepo {
 
-
-
     fun getHelloWorldText(): Observable<LCE<ZResult<Any>>> {
-
         return Observable
                 .just(getRandomMessage())
                 .delay(1, TimeUnit.SECONDS)
                 .map { LCE.success<Any>(it) }
                 .compose(RxHelper.loadingErrorTransformer(LoadingStyle.PROGRESS_BAR, ""))
     }
-
 
      fun getRandomMessage(): HelloDTO {
         val messages = listOf("Hello World", "Hola Mundo", "Hallo Welt", "Bonjour le monde")

@@ -3,12 +3,31 @@ package com.begfs.mvilce.view.mvi
 import io.reactivex.functions.Consumer
 import java.util.NoSuchElementException
 import com.begfs.mvilce.adt.ZResult
+import com.google.gson.JsonParseException
+import org.json.JSONException
+import retrofit2.HttpException
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import javax.net.ssl.SSLHandshakeException
 
 //loading的样式
 enum class LoadingStyle { PROGRESS_DIALOG, PROGRESS_BAR }
 
 // Loading的类型
 data class Loading(val style: LoadingStyle, val message: String)
+
+/**
+ * 错误分类：
+ * 1 开发者看的错误
+ * 2 用户看的错误
+ * */
+enum class ErrorType(code : Int) {
+    NO_NETWORK(1000), SOCKET(1001), HTTP(1002), PARSE(1003), OTHER(1004)
+}
+
+data class Errored(val type : ErrorType, val message: String, val throwable: Throwable)
+
 
 /***
  * LCE<C>: Loading Content Error模式, C是正确时返回数据的类型
@@ -68,3 +87,38 @@ class LCEResult<C> constructor(var resultValue: C) : LCE<C>() {
     }
 }
 
+object ErrorHandle {
+    private fun parse(throwable: Throwable): Errored {
+
+        return when(throwable){
+            is HttpException
+            -> Errored(ErrorType.HTTP, "HTTP", throwable)
+
+            is ConnectException, is SocketTimeoutException, is UnknownHostException, is SSLHandshakeException
+            -> Errored(ErrorType.SOCKET, "SOCKET", throwable)
+
+            is JsonParseException, is JSONException
+            -> Errored(ErrorType.PARSE, "PARSE", throwable)
+
+            else -> Errored(ErrorType.OTHER, "OTHER", throwable)
+        }
+    }
+
+
+    fun <S> handleError(r: Req, failure: Throwable, viewHandler : VView<S>){
+        val e = parse(failure)
+        when (e.type) {
+            ErrorType.NO_NETWORK -> {
+                viewHandler.showError(r, ErrorStyle.TOAST, e.message, failure)
+            }
+            ErrorType.SOCKET -> {
+            }
+            ErrorType.HTTP -> {
+            }
+            ErrorType.PARSE -> {
+            }
+            ErrorType.OTHER -> {
+            }
+        }
+    }
+}
