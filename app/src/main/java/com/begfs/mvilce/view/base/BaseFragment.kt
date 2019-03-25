@@ -8,11 +8,8 @@ import com.hannesdorfmann.mosby3.mvi.MviPresenter
 abstract class BaseFragment<V : VPExchange, P : MviPresenter<V, ReqRes>, S: Any>
     : MviFragment<V, P>(), VPExchange, VView<S> {
 
-    abstract fun initViewMode() : S
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = initViewMode()
     }
 
     override fun onLCE(rr: ReqRes) {

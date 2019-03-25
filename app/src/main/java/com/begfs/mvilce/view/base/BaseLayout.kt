@@ -33,13 +33,10 @@ abstract class BaseLinearLayout<V : VPExchange, P : MviPresenter<V, ReqRes>, S: 
     }
 
     private fun initViewLocal(context: Context) {
-        viewModel = initViewMode()
         initView(context)
     }
 
     abstract fun initView(context: Context)
-
-    abstract fun initViewMode() : S
 
     override fun onLCE(rr: ReqRes) {
         VHandler.onLCE(rr, this)
@@ -81,13 +78,10 @@ abstract class BaseFrameLayout<V : VPExchange, P : MviPresenter<V, ReqRes>, S: A
     }
 
     private fun initViewLocal(context: Context) {
-        viewModel = initViewMode()
         initView(context)
     }
 
     abstract fun initView(context: Context)
-
-    abstract fun initViewMode() : S
 
     override fun onLCE(rr: ReqRes) {
         VHandler.onLCE(rr, this)
@@ -129,13 +123,10 @@ abstract class BaseRelativeLayout<V : VPExchange, P : MviPresenter<V, ReqRes>, S
     }
 
     private fun initViewLocal(context: Context) {
-        viewModel = initViewMode()
         initView(context)
     }
 
     abstract fun initView(context: Context)
-
-    abstract fun initViewMode() : S
 
     override fun onLCE(rr: ReqRes) {
         VHandler.onLCE(rr, this)

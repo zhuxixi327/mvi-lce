@@ -11,6 +11,8 @@ import kotlinx.android.synthetic.main.activity_helloworld.*
 
 class HelloWorldActivity : BaseActivity<HelloWorldExchange, HelloWorldPresenter, HelloViewModel>(), HelloWorldExchange {
 
+    override var viewModel = HelloViewModel("hello")
+
     override fun onRender(vm: HelloViewModel) {
         loadingIndicator.visibility = View.INVISIBLE
         with(helloWorldTextview) {
@@ -18,8 +20,6 @@ class HelloWorldActivity : BaseActivity<HelloWorldExchange, HelloWorldPresenter,
             text = vm.greeting
         }
     }
-
-    override fun initViewMode() = HelloViewModel("")
 
     override fun onReduce(vm: HelloViewModel, pair: Pair<Req, Any>): HelloViewModel {
         val content = pair.second

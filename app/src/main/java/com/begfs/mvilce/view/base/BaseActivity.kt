@@ -10,10 +10,6 @@ import com.hannesdorfmann.mosby3.mvi.MviPresenter
 abstract class BaseActivity<V : VPExchange, P : MviPresenter<V, ReqRes>, S: Any>
     : MviActivity<V, P>(), VPExchange, VView<S> {
 
-    override lateinit var viewModel : S
-
-    abstract fun initViewMode() : S
-
     @LayoutRes
     abstract fun layoutId(): Int
 
@@ -23,8 +19,6 @@ abstract class BaseActivity<V : VPExchange, P : MviPresenter<V, ReqRes>, S: Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewModel = initViewMode()
 
         beforeLayout(this)
         setContentView(layoutId())
