@@ -21,8 +21,8 @@ object RxHelper {
 
     fun loadingErrorTransformer(type: LoadingStyle, message: String) : ObservableTransformer<LCE<ZResult<Any>>, LCE<ZResult<Any>>> {
         return ObservableTransformer { upstream -> upstream
-            .startWith(LCE.loading(type, message))
-            .onErrorReturn { LCE.failure(it) }
+            .startWith(LCEHelper.loading(type, message))
+            .onErrorReturn { LCEHelper.failure(it) }
         }
     }
 

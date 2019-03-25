@@ -36,55 +36,42 @@ data class Errored(val type : ErrorType, val message: String, val throwable: Thr
  * 2 ZResult<C>可包含正确和错误两种情况，正确内容C和错误的Throwable互斥
  */
 sealed class LCE<C> {
-    companion object {  //生产LCE的便利工具
-
-        fun <C> loading(type: LoadingStyle, message: String) : LCE<ZResult<C>> = LCELoading(Loading(type, message))
-
-        fun <C> success(c: C): LCE<ZResult<C>> = LCEResult(ZResult.success(c))
-
-        fun <C> failure(e: Throwable): LCE<ZResult<C>> = LCEResult(ZResult.failure(e))
-    }
-
-
-    abstract fun getLoading(): Loading
-    abstract fun getResult(): ZResult<C>
-
     abstract fun isLoading(): Boolean
     abstract fun isResult(): Boolean
 
-    abstract fun onLoadingOrResult(loading: Consumer<Loading>, result: Consumer<ZResult<C>>)
+    abstract fun getLoading(): Loading
+    abstract fun getResult(): C
+
+    abstract fun onLoadingOrResult(loading: Consumer<Loading>, result: Consumer<C>)
 }
 
 class LCELoading<C> constructor(var loadingValue: Loading) : LCE<C>() {
-
-    override fun getLoading() = loadingValue
-
-    override fun getResult(): ZResult<C> {
-        throw NoSuchElementException("Tried to getResult from a LCELoading")
-    }
-
     override fun isLoading() = true
     override fun isResult() = false
 
-    override fun onLoadingOrResult(loading: Consumer<Loading>, result: Consumer<ZResult<C>>) {
-        loading.accept(this.loadingValue)
-    }
+    override fun getLoading() = loadingValue
+    override fun getResult() = throw NoSuchElementException("Tried to getResult from a LCELoading")
+
+    override fun onLoadingOrResult(loading: Consumer<Loading>, result: Consumer<C>) = loading.accept(this.loadingValue)
 }
 
 class LCEResult<C> constructor(var resultValue: C) : LCE<C>() {
-
-    override fun getLoading(): Loading {
-        throw NoSuchElementException("Tried to getLoading from a LCEResult")
-    }
-
-    override fun getResult() = ZResult.success(resultValue)
-
     override fun isLoading() = false
     override fun isResult() = true
 
-    override fun onLoadingOrResult(loading: Consumer<Loading>, result: Consumer<ZResult<C>>) {
-        result.accept(getResult())
-    }
+    override fun getLoading() = throw NoSuchElementException("Tried to getLoading from a LCEResult")
+    override fun getResult()  = resultValue
+
+    override fun onLoadingOrResult(loading: Consumer<Loading>, result: Consumer<C>) = result.accept(getResult())
+}
+
+object LCEHelper {  //生产LCE的便利工具
+
+    fun <C> loading(type: LoadingStyle, message: String) : LCE<ZResult<C>> = LCELoading(Loading(type, message))
+
+    fun <C> success(c: C): LCE<ZResult<C>> = LCEResult(ZResult.success(c))
+
+    fun <C> failure(e: Throwable): LCE<ZResult<C>> = LCEResult(ZResult.failure(e))
 }
 
 object ErrorHandle {

@@ -2,6 +2,7 @@ package com.begfs.mvilce.view.helloworld
 
 import com.begfs.mvilce.adt.ZResult
 import com.begfs.mvilce.view.mvi.LCE
+import com.begfs.mvilce.view.mvi.LCEHelper
 import com.begfs.mvilce.view.mvi.LoadingStyle
 import com.begfs.mvilce.view.mvi.RxHelper
 import io.reactivex.Observable
@@ -14,7 +15,7 @@ object HelloWorldRepo {
         return Observable
                 .just(getRandomMessage())
                 .delay(1, TimeUnit.SECONDS)
-                .map { LCE.success<Any>(it) }
+                .map { LCEHelper.success<Any>(it) }
                 .compose(RxHelper.loadingErrorTransformer(LoadingStyle.PROGRESS_BAR, ""))
     }
 

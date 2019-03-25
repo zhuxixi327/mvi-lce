@@ -32,7 +32,7 @@ object VHandler {
                         Consumer { ErrorHandle.handleError(rr.req, it, viewHandler) },
                         Consumer { //Success
                                 success -> run {
-                                    viewHandler.viewModel = viewHandler.onReduce(viewHandler.viewModel, rr.req to success.result())
+                                    viewHandler.viewModel = viewHandler.onReduce(viewHandler.viewModel, rr.req to success)
                                     viewHandler.onRender(viewHandler.viewModel)
                                 }
                         }
